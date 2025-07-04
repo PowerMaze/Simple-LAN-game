@@ -68,7 +68,7 @@ License
 
 This  game is licensed under the MIT license (see LICENSE file).
 
-Some of the code included with the engine sources is not licensed under the GNU GPL v2:
+Below are the side libraries that are used:
 
 * `SDL2` by Sam Lantinga and SDL Community (zlib license)
 * `Libsodium` see credits in official documentation: https://doc.libsodium.org/#thanks (ISC license)
