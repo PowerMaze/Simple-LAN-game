@@ -1,0 +1,2 @@
+cd C:\Games\In-the-Power
+MakeModel Data\Models\Misc\TestCube.obj Models\Misc\TestCube.mo

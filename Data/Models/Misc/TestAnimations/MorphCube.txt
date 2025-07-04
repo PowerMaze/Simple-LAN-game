@@ -1,0 +1,16 @@
+FRAMES_COUNT 1
+ANIMATION ANIM_DEFAULT
+SPEED 1.0
+C:\Games\In-the-Power\Data\Models\Misc\TestAnimations\MorphCube.obj
+END_FRAMES
+ANIMATION ANIM_MORPH
+SPEED 1.0
+C:\Games\In-the-Power\Data\Models\Misc\TestAnimations\MorphCube.obj
+C:\Games\In-the-Power\Data\Models\Misc\TestAnimations\Frames\2.obj
+C:\Games\In-the-Power\Data\Models\Misc\TestAnimations\Frames\3.obj
+C:\Games\In-the-Power\Data\Models\Misc\TestAnimations\Frames\4.obj
+C:\Games\In-the-Power\Data\Models\Misc\TestAnimations\Frames\5.obj
+C:\Games\In-the-Power\Data\Models\Misc\TestAnimations\Frames\6.obj
+C:\Games\In-the-Power\Data\Models\Misc\TestAnimations\Frames\7.obj
+END_FRAMES
+END

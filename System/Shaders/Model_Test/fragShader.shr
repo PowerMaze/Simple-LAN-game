@@ -1,0 +1,17 @@
+#version 400 core
+out vec4 FragColor;
+
+in vec2 TexCoord;
+
+// Текстурні семплери
+uniform sampler2D diffuse_texture;
+uniform vec4 modelColor;
+
+void main()
+{
+	vec4 tex = texture(diffuse_texture, TexCoord);
+        tex *= modelColor;
+        if (tex.a < 0.1)
+		discard;
+        FragColor = tex;
+}

@@ -1,0 +1,13 @@
+.wo - levels
+.mo - models
+.te - textures
+.sa - savegame
+.ga - game profile
+.de - demo files
+.sh - shaders
+.fo - font
+.tr - true font
+.mp3 - music
+.wav - sounds
+.ogg - music
+.png

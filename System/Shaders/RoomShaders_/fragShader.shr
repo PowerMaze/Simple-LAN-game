@@ -1,0 +1,99 @@
+#version 400 core
+out vec4 FragColor;
+
+
+in vec2 TexCoord;
+in vec3 Normal;
+
+// Текстурні семплери
+uniform sampler2D diffuse_texture;
+// rendering flags
+uniform uint poly_uiRenderingFlags;
+
+//uniform float mixon;
+
+
+struct DirLight 
+{
+    vec3 direction;
+  
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;	
+	
+};  
+struct Material 
+{
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    float shininess;
+}; 
+
+uniform DirLight dirLight;
+uniform Material material;
+
+// get directional light
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir); 
+
+uniform vec3 viewPos;
+
+in vec3 FragPos; 
+
+void main()
+{
+	vec3 vRes;
+	// if polygon is full bright
+	if ((poly_uiRenderingFlags & 8) == 1)
+	{
+		vRes = vec3(1.0, 1.0, 1.0);
+		/*
+		vec4 tex = texture(diffuse_texture, TexCoord);
+			if (tex.a < 0.1)
+				discard;
+		FragColor = tex;*/
+	}
+	else
+	{		
+		vec3 norm = normalize(Normal);
+		
+        vec3 viewDir = normalize(viewPos - FragPos);
+		
+		vRes = CalcDirLight(dirLight, norm, viewDir);
+	}	
+	
+	vec4 tex = texture(diffuse_texture, TexCoord);
+		if (tex.a < 0.1)
+			discard;
+		
+		
+	FragColor = vec4(vRes, 1.0) * tex;			
+}
+
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
+{
+	vec3 lightDir = normalize(-light.direction);
+    // diffuse shading
+    float diff = max(dot(normal, lightDir), 0.0);
+    // specular shading
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    // combine results
+   // vec3 ambient  = light.ambient  * vec3(texture(material.diffuse, TexCoords));
+   // vec3 diffuse  = light.diffuse  * diff * vec3(texture(material.diffuse, TexCoords));
+   // vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
+    vec3 ambient  = light.ambient * material.ambient;
+    vec3 diffuse  = light.diffuse * (diff * material.diffuse);
+    vec3 specular = light.specular * (spec * material.specular);
+    return (ambient + diffuse + specular);
+}
+
+
+
+
+
+
+
+
+
+

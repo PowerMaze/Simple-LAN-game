@@ -1,0 +1,311 @@
+#include "Model.h"
+
+
+CModelObject* CreateModel(COBJDecoder& obj, CFileName& strFileName)
+{	
+	glm::vec3 vector3;
+	glm::vec2 vector2;
+	unsigned int dataIDfromOBJFace;
+
+	if (!obj.Load(strFileName)) 
+	{
+		Warning("Cannot create model\n");
+		return NULL;
+	}
+
+	CModelObject* mo = new CModelObject;	
+
+	for (unsigned i = 0; i < obj.vID.size(); i++)
+	{
+		dataIDfromOBJFace = obj.vID[i];
+		vector3 = obj.vertices[dataIDfromOBJFace - 1];
+		mo->mo_indicesID.push_back(dataIDfromOBJFace - 1);
+		mo->mo_verticies.push_back(vector3);
+	}
+
+	for (unsigned i = 0; i < obj.tID.size(); i++)
+	{
+		dataIDfromOBJFace = obj.tID[i];
+		vector2 = obj.textureUV[dataIDfromOBJFace - 1];
+		mo->mo_texcoords.push_back(vector2);
+	}
+
+	for (unsigned i = 0; i < obj.nID.size(); i++)
+	{
+		dataIDfromOBJFace = obj.nID[i];
+		vector3 = obj.normals[dataIDfromOBJFace - 1];
+		mo->mo_normals.push_back(vector3);
+	}	
+	
+	mo->mo_ModelMatrix = glm::mat4(1.0f);
+
+	return mo;
+}
+
+CModelObject::CModelObject() 
+{
+	VAO = 0;
+	VBO = 0;
+	EBO = 0;
+	preparedToRender = false;
+	rawData = NULL;
+//	mo_verticies.clear();
+//	mo_indicesID.clear();
+//	mo_normals.clear();
+//	mo_texcoords.clear();
+}
+
+void CModelObject::Clear()
+{
+
+	mo_verticies.clear();
+	mo_indicesID.clear();
+	mo_normals.clear();
+	mo_texcoords.clear();
+	Vertex.clear();
+	if (preparedToRender)
+	{
+		glDeleteVertexArrays(1, &VAO);
+		glDeleteBuffers(1, &VBO);
+		glDeleteBuffers(1, &EBO);
+		preparedToRender = false;
+	}	
+}
+
+CModelObject::~CModelObject() 
+{
+	Clear();
+}
+
+CModelObject::CModelObject(CFileName& strFileName) 
+{
+	preparedToRender = false;
+	Load(strFileName);
+}
+
+void CModelObject::Save(CFileName& strFileName)
+{
+	CFileStream file;
+	//FILE* file = fopen(strFileName.getCharPointer(), "wb");
+	
+
+	if (!file.open(strFileName, 0, 0))
+	{
+		PrintF("Cannot save model file: \"%s\"\n", strFileName);
+		return;
+	}
+
+	file.WriteToFile("MODL", sizeof(char) * 4);
+	// записуєм назву індентифікатора файлу
+	//fwrite("MODL", sizeof(char)*4, 1, file);
+	
+	// записуєм назву блоку для запису вершин
+	//fwrite("MVTX", sizeof(char), 1, file);
+
+	// записуєм кількість вершин
+	unsigned int uiCount = mo_verticies.size();
+	file.WriteToFile(&uiCount, sizeof(unsigned int));
+	//fwrite(&uiCount, sizeof(unsigned int), 1, file);
+
+	// записуєм вершини у файл
+	for (unsigned int i = 0; i < uiCount; i++)
+	{
+		file.WriteToFile(&mo_verticies[i].x, sizeof(float));
+		file.WriteToFile(&mo_verticies[i].y, sizeof(float));
+		file.WriteToFile(&mo_verticies[i].z, sizeof(float));
+	//	fwrite(&mo_verticies[i].x, sizeof(float), 1, file);
+	//	fwrite(&mo_verticies[i].y, sizeof(float), 1, file);
+	//	fwrite(&mo_verticies[i].z, sizeof(float), 1, file);
+	}
+
+	// записуєм кількість нормалей
+	uiCount = mo_normals.size();
+
+	file.WriteToFile(&uiCount, sizeof(unsigned int));
+
+	// записуєм нормалі у файл
+	for (unsigned int i = 0; i < uiCount; i++)
+	{
+		file.WriteToFile(&mo_normals[i].x, sizeof(float));
+		file.WriteToFile(&mo_normals[i].y, sizeof(float));
+		file.WriteToFile(&mo_normals[i].z, sizeof(float));
+	//	fwrite(&mo_normals[i].x, sizeof(float), 1, file);
+	//	fwrite(&mo_normals[i].y, sizeof(float), 1, file);
+	//	fwrite(&mo_normals[i].z, sizeof(float), 1, file);
+	}
+
+
+	// записуєм кількість текстурних координат
+	uiCount = mo_texcoords.size();
+	file.WriteToFile(&uiCount, sizeof(unsigned int));
+	// записуєм текстурні координати у файл
+	for (unsigned int i = 0; i < uiCount; i++)
+	{
+		file.WriteToFile(&mo_texcoords[i].x, sizeof(float));
+		file.WriteToFile(&mo_texcoords[i].y, sizeof(float));
+	//	fwrite(&mo_texcoords[i].x, sizeof(float), 1, file);
+	//	fwrite(&mo_texcoords[i].y, sizeof(float), 1, file);
+	}
+
+	// записуєм індентифікатор кінця файлу
+
+	uiCount = mo_indicesID.size();
+	//fwrite(&uiCount, sizeof(unsigned int), 1, file);
+	file.WriteToFile(&uiCount, sizeof(unsigned int));
+	for (unsigned int i = 0; i < uiCount; i++)
+	{
+		file.WriteToFile(&mo_indicesID[i], sizeof(unsigned int));
+	//	fwrite(&mo_indicesID[i], sizeof(unsigned int), 1, file);
+	}
+	file.closeFile();
+	// все
+	//fclose(file);
+}
+
+
+
+void CModelObject::Load(CFileName& strFileName)
+{
+	FILE* file = fopen(strFileName.getCharPointer(), "rb");
+	glm::vec3 vector3;
+	glm::vec2 vector2;
+
+	if (file == NULL)
+	{
+		PrintF("Cannot open model file: \"%s\"\n", strFileName);
+		return;
+	}
+
+	char strID[5];
+	
+
+	// записуєм назву індентифікатора файлу
+	fread(strID, sizeof(char)*4, 1, file);
+	strID[4] = '\0';
+
+	if (strcmp(strID, "MODL") != 0 )
+	{
+		PrintF("Cannot read model file: %s\n Invalid file format\n");
+		fclose(file);
+		return;
+	}
+
+	unsigned int uiCount;
+	fread(&uiCount, sizeof(unsigned int), 1, file);
+	PrintF("uiCount = %d\n", uiCount);
+	// записуєм вершини у файл
+	for (unsigned int i = 0; i < uiCount; i++)
+	{
+		fread(&vector3.x, sizeof(float), 1, file);
+		fread(&vector3.y, sizeof(float), 1, file);
+		fread(&vector3.z, sizeof(float), 1, file);
+		
+		mo_verticies.push_back(vector3);
+	}
+//	unsigned int uiCount;
+	fread(&uiCount, sizeof(unsigned int), 1, file);
+	PrintF("uiCount = %d\n", uiCount);
+	// записуєм нормалі у файл
+	for (unsigned int i = 0; i < uiCount; i++)
+	{
+		fread(&vector3.x, sizeof(float), 1, file);
+		fread(&vector3.y, sizeof(float), 1, file);
+		fread(&vector3.z, sizeof(float), 1, file);
+		
+		mo_normals.push_back(vector3);
+	}
+	
+	fread(&uiCount, sizeof(unsigned int), 1, file);
+
+	// записуєм текстурні координати у файл
+	for (unsigned int i = 0; i < uiCount; i++)
+	{
+		fread(&vector2.x, sizeof(float), 1, file);
+		fread(&vector2.y, sizeof(float), 1, file);
+
+		mo_texcoords.push_back(vector2);
+	}
+
+	fread(&uiCount, sizeof(unsigned int), 1, file);
+	unsigned int vID;
+	// записуєм текстурні координати у файл
+	for (unsigned int i = 0; i < uiCount; i++)
+	{
+		fread(&vID, sizeof(unsigned int), 1, file);
+
+		mo_indicesID.push_back(vID);
+	}
+
+	// все
+	fclose(file);
+}
+
+void CModelObject::PrepareToRender() 
+{
+
+
+
+	mo_ModelMatrix = glm::mat4(1.0f);
+	// Создаем буферные объекты/массивы
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+
+	glBindVertexArray(VAO);
+
+	// Загружаем данные в вершинный буфер
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, mo_verticies.size() * sizeof(float) * 3, mo_verticies.data(), GL_STATIC_DRAW);
+	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mo_indicesID.size() * sizeof(unsigned int), mo_indicesID.data(), GL_STATIC_DRAW);
+
+	// Устанавливаем указатели вершинных атрибутов
+
+	// Координаты вершин
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)*5, (void*)0);
+
+	// Нормали вершин
+	//glEnableVertexAttribArray(1);
+	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(3 * sizeof(float)));
+
+	// Текстурные координаты вершин
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void*)(3 * sizeof(float)));
+
+/*
+	// Касательный вектор вершины
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
+
+	// Вектор бинормали вершины
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));*/
+
+	//glBindVertexArray(0);
+
+	preparedToRender = true;
+
+}
+
+void CModelObject::Render(CShader& sha) 
+{
+	unsigned int diffTEX = 0;
+
+	glActiveTexture(GL_TEXTURE0);
+
+	//glUniform1i(glGetUniformLocation(sha.shID, "diffuse_texture"), 0);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, mo_indicesID.size(), GL_UNSIGNED_INT, 0);
+//	glDrawArrays(GL_TRIANGLES, 0, mo_verticies.size() / 9);
+	//glBindVertexArray(0);
+
+
+
+	
+}
+
+

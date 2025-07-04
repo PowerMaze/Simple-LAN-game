@@ -1,0 +1,82 @@
+PACKAGE: Game.DLL
+PACAKGE_DEBUG: DGame.DLL
+
+
+/*
+************************************************************
+
+Description of entities for the level editor. Each entity is 
+described in this file, after which the editor saves the level 
+with these entities. In fact, the editor can open a level with 
+entities that are not in the Game.dll library, but keep in mind 
+that the game will not be able to do this, since the entities 
+must match the entities in the Game.dll
+
+************************************************************
+*/
+
+
+/*
+////////////////////////////////////////////////////////////////
+
+Syntax of editor class:
+
+ENTITY <entity_name> {
+
+numProperties = x;
+
+{
+<type> <name_property> <value>
+...
+
+}
+
+icon: patch to icon (Data\Textures\Editor\) (can be different patch)
+model: patch to model placement (used for editor entities)
+texture: path to texture for model
+
+}
+
+////////////////////////////////////////////////////////////////
+*/
+
+
+ENTITIES = 2
+
+ENTITY TextAlert {
+
+numProperties = 2;
+
+{
+	bool bOnce = true;
+	string strAlert = NULL;
+}
+
+icon = Data\Textures\Editor\Icons\TextAlert.te;
+model = Data\Models\Editor\DefaultCube.mo;
+
+color = 255 255 0 255;
+
+
+}
+
+
+
+ENTITY PlayerSpawn {
+
+numProperties = 4;
+
+{
+	uint uiWeapons = 3;
+	uint uiAmmo    = 3;
+	int ihealth = 100;
+	int armor = 0;
+}
+
+icon = Data\Textures\Editor\Icons\PlayerSpawn.te;
+model = Data\Models\Editor\PlayerSpawn.mo;
+texture = Data\Models\Editor\PlayerSpawn.te;
+
+}
+
+END

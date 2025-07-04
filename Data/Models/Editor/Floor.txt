@@ -1,0 +1,6 @@
+FRAMES_COUNT 1
+ANIMATION ANIM_DEFAULT
+SPEED 1.0
+C:\Games\In-the-Power\Data\Models\Editor\Floor.obj
+END_FRAMES
+END
