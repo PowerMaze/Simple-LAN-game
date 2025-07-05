@@ -9,6 +9,8 @@ The engine uses some third-party libraries to facilitate development.
 
 You may have seen some similarities with other engines, and there are. I took inspiration for ideas from other engines such as Serious Engine and Id Tech 3, and yes, I didn't copy anything from there.
 
+You might also have seen my nickname as Dark-Head - it was my old nickname when I was developing.
+
 This project will most likely be an introduction to how online games and game engines work. I hope it will be useful for someone who wants to get acquainted with how games work.
 As this is an alpha version of the game, I plan to improve both the engine and the game in the future.
 
