@@ -6,6 +6,8 @@ About
 An online network game that I created in my final year of university. The game is not optimised, crashes are possible and uses a very naive client-server implementation. 
 The engine uses some third-party libraries to facilitate development.
 
+It also uses resources from another game as a placeholder for testing, and this is about weapons - (Q3ShotGun.mo and q3Rocket.mo, as well as textures) both taken from the game Quake III Arena by Id Software. I do not and will not use them for commercial purposes! All other resources are made by me.
+
 You may have seen some similarities with other engines, and there are. I took inspiration for ideas from other engines such as Serious Engine and Id Tech 3, and yes, I didn't copy anything from there.
 
 You might also have seen my nickname as Dark-Head - it was my old nickname when I was developing.
