@@ -77,3 +77,4 @@ Below are the side libraries that are used:
 * `Libsodium` see credits in official documentation: https://doc.libsodium.org/#thanks (ISC license)
 * `Bullet Engine` by Erwin Coumans (zlib license)
 * `GLM` by Christophe Riccio (MIT license)
+* `stb image` by Sean Barrett (MIT license)
