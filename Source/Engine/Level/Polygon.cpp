@@ -176,6 +176,8 @@ void CPolygonWorld::Load(CFileStream& file)
 	file.ReadFromFile(&vNormal.z, sizeof(float));
 
 	processData();
+
+	free(textureFilePath); // <------ don't forget release pointer
 }
 
 void DumpPulygonData(CPolygonWorld* polygon) 
@@ -200,7 +202,7 @@ void CPolygonWorld::Prepare()
 
 	glBindVertexArray(VAO);
 
-	// Çàãðóæàåì äàííûå â âåðøèííûé áóôåð
+	// Ã‡Ã Ã£Ã°Ã³Ã¦Ã Ã¥Ã¬ Ã¤Ã Ã­Ã­Ã»Ã¥ Ã¢ Ã¢Ã¥Ã°Ã¸Ã¨Ã­Ã­Ã»Ã© Ã¡Ã³Ã´Ã¥Ã°
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, RenderData.size() * sizeof(float), &RenderData[0], GL_STATIC_DRAW);
 
@@ -208,24 +210,24 @@ void CPolygonWorld::Prepare()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
 
-	// Êîîðäèíàòû âåðøèí
+	// ÃŠÃ®Ã®Ã°Ã¤Ã¨Ã­Ã Ã²Ã» Ã¢Ã¥Ã°Ã¸Ã¨Ã­
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(0*sizeof(float)));
 
-	// Òåêñòóðíûå êîîðäèíàòû âåðøèí
+	// Ã’Ã¥ÃªÃ±Ã²Ã³Ã°Ã­Ã»Ã¥ ÃªÃ®Ã®Ã°Ã¤Ã¨Ã­Ã Ã²Ã» Ã¢Ã¥Ã°Ã¸Ã¨Ã­
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(3 * sizeof(float)));
 
-	// Íîðìàëè âåðøèí
+	// ÃÃ®Ã°Ã¬Ã Ã«Ã¨ Ã¢Ã¥Ã°Ã¸Ã¨Ã­
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(5 * sizeof(float)));
 
 	/*
-		// Êàñàòåëüíûé âåêòîð âåðøèíû
+		// ÃŠÃ Ã±Ã Ã²Ã¥Ã«Ã¼Ã­Ã»Ã© Ã¢Ã¥ÃªÃ²Ã®Ã° Ã¢Ã¥Ã°Ã¸Ã¨Ã­Ã»
 		glEnableVertexAttribArray(3);
 		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
 
-		// Âåêòîð áèíîðìàëè âåðøèíû
+		// Ã‚Ã¥ÃªÃ²Ã®Ã° Ã¡Ã¨Ã­Ã®Ã°Ã¬Ã Ã«Ã¨ Ã¢Ã¥Ã°Ã¸Ã¨Ã­Ã»
 		glEnableVertexAttribArray(4);
 		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));*/
 
@@ -320,6 +322,6 @@ void CPolygonWorld::Render(CShader &sha)
 //	glDrawArrays(GL_TRIANGLES, 0, 6/*indices.size() */ );
 	glBindVertexArray(0);
 
-	// Ñ÷èòàåòñÿ õîðîøåé ïðàêòèêîé âîçâðàùàòü çíà÷åíèÿ ïåðåìåííûõ ê èõ ïåðâîíà÷àëüíûì çíà÷åíèÿì
+	// Ã‘Ã·Ã¨Ã²Ã Ã¥Ã²Ã±Ã¿ ÃµÃ®Ã°Ã®Ã¸Ã¥Ã© Ã¯Ã°Ã ÃªÃ²Ã¨ÃªÃ®Ã© Ã¢Ã®Ã§Ã¢Ã°Ã Ã¹Ã Ã²Ã¼ Ã§Ã­Ã Ã·Ã¥Ã­Ã¨Ã¿ Ã¯Ã¥Ã°Ã¥Ã¬Ã¥Ã­Ã­Ã»Ãµ Ãª Ã¨Ãµ Ã¯Ã¥Ã°Ã¢Ã®Ã­Ã Ã·Ã Ã«Ã¼Ã­Ã»Ã¬ Ã§Ã­Ã Ã·Ã¥Ã­Ã¨Ã¿Ã¬
 	//glActiveTexture(GL_TEXTURE0);
 }
