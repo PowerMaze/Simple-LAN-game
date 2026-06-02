@@ -17,33 +17,33 @@
 class CFileName 
 {
 public:
-	/* назва файлу */
+	/* РЅР°Р·РІР° С„Р°Р№Р»Сѓ */
 	std::string strFileName;
 public:
-	/* стандартний конструктор */
+	/* СЃС‚Р°РЅРґР°СЂС‚РЅРёР№ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ */
 	ENGINE_API CFileName() = default;
-	/* констурктор через std::string */
+	/* РєРѕРЅСЃС‚СѓСЂРєС‚РѕСЂ С‡РµСЂРµР· std::string */
 	ENGINE_API CFileName(const std::string newFileName);
-	/* коструктор через const char */
+	/* РєРѕСЃС‚СЂСѓРєС‚РѕСЂ С‡РµСЂРµР· const char */
 	ENGINE_API CFileName(const char* newFileName);
 	/* 
-	зміна розширення файлу. 
+	Р·РјС–РЅР° СЂРѕР·С€РёСЂРµРЅРЅСЏ С„Р°Р№Р»Сѓ. 
 	
-	ВАЖЛИВО: Розширення файлу змінюйте за таким прикладом
+	Р’РђР–Р›РР’Рћ: Р РѕР·С€РёСЂРµРЅРЅСЏ С„Р°Р№Р»Сѓ Р·РјС–РЅСЋР№С‚Рµ Р·Р° С‚Р°РєРёРј РїСЂРёРєР»Р°РґРѕРј
 	strFileName.ChangeEXT(".wo");
 	*/
 	ENGINE_API void ChangeEXT(const char* newExt);
-	/* Перевести рядок у С-масив char @return const char*  */
+	/* РџРµСЂРµРІРµСЃС‚Рё СЂСЏРґРѕРє Сѓ РЎ-РјР°СЃРёРІ char @return const char*  */
 	ENGINE_API const char* getCharPointer(void) { return strFileName.c_str();	}
-	/* Отримати назву файлу */
+	/* РћС‚СЂРёРјР°С‚Рё РЅР°Р·РІСѓ С„Р°Р№Р»Сѓ */
 	ENGINE_API std::string GetFileNameWitoutDir(void);
-	/* порівняння розширення файлів */
+	/* РїРѕСЂС–РІРЅСЏРЅРЅСЏ СЂРѕР·С€РёСЂРµРЅРЅСЏ С„Р°Р№Р»С–РІ */
 	ENGINE_API bool CompareEXT(const char* ext);
-	/* конструктор копіювання з самого класу CFileName */
+	/* РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєРѕРїС–СЋРІР°РЅРЅСЏ Р· СЃР°РјРѕРіРѕ РєР»Р°СЃСѓ CFileName */
 	ENGINE_API CFileName &operator=(const CFileName newFilename);
-	/* конструктор копіювання з std::string рядка */
+	/* РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєРѕРїС–СЋРІР°РЅРЅСЏ Р· std::string СЂСЏРґРєР° */
 	ENGINE_API CFileName &operator=(const std::string& newFilename);
-	/* конструктор копіювання з масиву char* рядків */
+	/* РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєРѕРїС–СЋРІР°РЅРЅСЏ Р· РјР°СЃРёРІСѓ char* СЂСЏРґРєС–РІ */
 	ENGINE_API CFileName &operator=(const char* newFilename);
 	ENGINE_API inline operator const char*(void) { return strFileName.c_str(); }
 	ENGINE_API inline operator const char* (void) const { return strFileName.c_str(); }
